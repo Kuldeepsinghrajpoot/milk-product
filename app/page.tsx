@@ -1,6 +1,9 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Reveal } from './components/Reveal';
 import {
   Droplet,
   Milk,
@@ -26,7 +29,8 @@ import {
   Database,
   Server,
   Zap,
-  Warehouse
+  Warehouse,
+  ArrowRight
 } from 'lucide-react';
 
 export default function App() {
@@ -49,8 +53,8 @@ export default function App() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="lg:grid lg:grid-cols-2 gap-16 items-center">
-              <div>
-                 <div className="inline-flex items-center space-x-2 text-orange-700 font-bold text-sm tracking-widest uppercase mb-8 bg-orange-100 px-4 py-2 rounded-full">
+              <Reveal>
+                <div className="inline-flex items-center space-x-2 text-orange-700 font-bold text-sm tracking-widest uppercase mb-8 bg-orange-100 px-4 py-2 rounded-full">
                     <Factory className="w-4 h-4" />
                     <span>The Modern Doodh Factory</span>
                 </div>
@@ -64,12 +68,12 @@ export default function App() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <button className="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white bg-orange-600 hover:bg-orange-700 transition-all rounded-lg shadow-lg shadow-orange-200">
+                  <Link href="/contact" className="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-white bg-orange-600 hover:bg-orange-700 transition-all rounded-lg shadow-lg shadow-orange-200">
                     Become a Distributor
-                  </button>
-                  <button className="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-slate-700 bg-white border-2 border-slate-200 hover:border-orange-600 hover:text-orange-600 transition-all rounded-lg">
+                  </Link>
+                  <Link href="/contact" className="inline-flex justify-center items-center px-8 py-4 text-base font-bold text-slate-700 bg-white border-2 border-slate-200 hover:border-orange-600 hover:text-orange-600 transition-all rounded-lg">
                     OEM/Co-Packing Inquiry
-                  </button>
+                  </Link>
                 </div>
 
                 {/* Quick Trust Signals */}
@@ -85,9 +89,10 @@ export default function App() {
                         <Award className="w-5 h-5 mr-2 text-orange-600" /> Export EIA Approved
                     </span>
                 </div>
-              </div>
+              </Reveal>
 
-              <div className="relative mt-16 lg:mt-0">
+              <Reveal delay={0.15} scale>
+                <div className="relative mt-16 lg:mt-0">
                 <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl relative z-10 border-8 border-white">
                   <img
                     src="/hero.png"
@@ -100,13 +105,15 @@ export default function App() {
                 </div>
                 <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-green-50 rounded-full -z-10"></div>
                 <div className="absolute -top-6 -left-6 w-48 h-48 bg-orange-100 rounded-full -z-10"></div>
-              </div>
+                </div>
+              </Reveal>
             </div>
           </div>
         </section>
 
         {/* Key Metrics */}
         <section className="relative z-20 -mt-24 px-4">
+            <Reveal delay={0.1}>
              <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-100 p-8 lg:p-12">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                     <div className="pb-8 md:pb-0 md:pr-8 text-center md:text-left flex flex-col justify-center">
@@ -141,6 +148,7 @@ export default function App() {
                     </div>
                 </div>
              </div>
+            </Reveal>
         </section>
 
         {/* Factory Operations Detail */}
@@ -156,7 +164,8 @@ export default function App() {
 
                 <div className="grid md:grid-cols-3 gap-8">
                     {/* Op Card 1 */}
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <Reveal delay={0}>
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
                         <div className="w-12 h-12 bg-green-100 text-green-700 rounded-lg flex items-center justify-center mb-6">
                             <Store className="w-6 h-6" />
                         </div>
@@ -165,8 +174,10 @@ export default function App() {
                             Milk sourced directly via <strong>Village Level Collection Centers</strong> equipped with AMCS for instant Fat% & SNF% testing, ensuring transparency with our 50,000+ farmers.
                         </p>
                     </div>
+                    </Reveal>
                     {/* Op Card 2 */}
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <Reveal delay={0.12}>
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
                          <div className="w-12 h-12 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center mb-6">
                             <ThermometerSnowflake className="w-6 h-6" />
                         </div>
@@ -175,8 +186,10 @@ export default function App() {
                             80% of procurement is chilled to <strong>4°C within 60 minutes</strong> of milking at cluster Bulk Milk Coolers (BMCs), drastically reducing bacterial load (MBRT {'>'} 5 hrs).
                         </p>
                     </div>
+                    </Reveal>
                     {/* Op Card 3 */}
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <Reveal delay={0.24}>
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 h-full">
                          <div className="w-12 h-12 bg-orange-100 text-orange-700 rounded-lg flex items-center justify-center mb-6">
                             <Cog className="w-6 h-6" />
                         </div>
@@ -185,6 +198,7 @@ export default function App() {
                             High-speed clarification followed by <strong>2-stage homogenization at 200 Bar</strong> pressure and 5-stage Plate Heat Exchanger (PHE) pasteurization.
                         </p>
                     </div>
+                    </Reveal>
                 </div>
             </div>
         </section>
@@ -193,7 +207,8 @@ export default function App() {
         <section className="py-32 bg-white overflow-hidden">
              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                  <div className="lg:flex items-start gap-16">
-                     <div className="lg:w-2/5 mb-16 lg:mb-0 lg:sticky lg:top-32">
+                     <Reveal className="lg:w-2/5 mb-16 lg:mb-0 lg:sticky lg:top-32">
+                     <div>
                         <div className="inline-flex items-center space-x-2 text-slate-500 font-bold text-sm tracking-widest uppercase mb-6 bg-slate-100 px-4 py-2 rounded-full">
                             <Database className="w-4 h-4" />
                             <span>Infrastructure & Assets</span>
@@ -212,31 +227,39 @@ export default function App() {
                              </p>
                          </div>
                      </div>
+                     </Reveal>
 
                      <div className="lg:w-3/5 grid sm:grid-cols-2 gap-6">
                          {/* Asset Card 1 */}
-                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group">
+                         <Reveal delay={0}>
+                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group h-full">
                              <Warehouse className="w-10 h-10 text-slate-400 mb-6 group-hover:text-orange-600 transition-colors" />
                              <h3 className="text-xl font-bold text-slate-900 mb-2">Raw Milk Silos</h3>
                              <p className="text-4xl font-extrabold text-slate-900 mb-1">25 LL</p>
                              <p className="text-slate-500 font-medium text-sm">Total storage capacity (5 x 500KL insulated silos)</p>
                          </div>
+                         </Reveal>
                          {/* Asset Card 2 */}
-                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group">
+                         <Reveal delay={0.1}>
+                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group h-full">
                              <ThermometerSnowflake className="w-10 h-10 text-slate-400 mb-6 group-hover:text-blue-600 transition-colors" />
                              <h3 className="text-xl font-bold text-slate-900 mb-2">Cold Warehouse</h3>
                              <p className="text-4xl font-extrabold text-slate-900 mb-1">4,500 MT</p>
                              <p className="text-slate-500 font-medium text-sm">Automated pallet storage (-18°C & 4°C zones)</p>
                          </div>
+                         </Reveal>
                           {/* Asset Card 3 */}
-                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group">
+                         <Reveal delay={0.2}>
+                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group h-full">
                              <Zap className="w-10 h-10 text-slate-400 mb-6 group-hover:text-yellow-500 transition-colors" />
                              <h3 className="text-xl font-bold text-slate-900 mb-2">Power Backup</h3>
                              <p className="text-4xl font-extrabold text-slate-900 mb-1">100%</p>
                              <p className="text-slate-500 font-medium text-sm">3 x 2000 kVA DG Sets with auto-changeover</p>
                          </div>
+                         </Reveal>
                           {/* Asset Card 4 */}
-                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group">
+                         <Reveal delay={0.3}>
+                         <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 hover:border-orange-200 transition-colors group h-full">
                              <Server className="w-10 h-10 text-slate-400 mb-6 group-hover:text-green-600 transition-colors" />
                              <h3 className="text-xl font-bold text-slate-900 mb-2">Tech Partners</h3>
                              <div className="flex flex-wrap gap-2 mt-3">
@@ -245,6 +268,7 @@ export default function App() {
                                  <span className="px-3 py-1 bg-white rounded-full text-xs font-bold text-slate-600 border">Alfa Laval</span>
                              </div>
                          </div>
+                         </Reveal>
                      </div>
                  </div>
              </div>
@@ -254,14 +278,15 @@ export default function App() {
         <section className="py-24 bg-green-900 text-green-50 relative overflow-hidden">
              <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col lg:flex-row items-center gap-16">
-                 <div className="lg:w-1/2">
+                 <Reveal className="lg:w-1/2">
+                 <div>
                     <div className="inline-flex items-center space-x-2 text-green-300 font-bold text-sm tracking-widest uppercase mb-6 bg-green-800/50 px-4 py-2 rounded-full">
                         <Leaf className="w-4 h-4" />
                         <span>ESG Commitment</span>
                     </div>
                     <h2 className="text-4xl font-extrabold mb-6 leading-tight">Responsible Manufacturing.</h2>
                     <p className="text-lg text-green-100/80 leading-relaxed mb-8">
-                        Modern dairy isn't just about efficiency; it's about responsibility. Our Gujarat facility operates on a closed-loop system designed to meet rigorous international ESG standards.
+                        Modern dairy isn't just about efficiency; it's about responsibility. Our Kanpur facility operates on a closed-loop system designed to meet rigorous international ESG standards.
                     </p>
                     <ul className="space-y-4">
                         <li className="flex items-center space-x-3">
@@ -278,7 +303,8 @@ export default function App() {
                         </li>
                     </ul>
                 </div>
-                <div className="lg:w-1/2 grid grid-cols-2 gap-6">
+                </Reveal>
+                <Reveal delay={0.15} className="lg:w-1/2 grid grid-cols-2 gap-6">
                     <div className="bg-green-800/30 backdrop-blur-sm p-8 rounded-3xl border border-green-700/30 text-center">
                          <div className="text-5xl font-black text-green-400 mb-2">-30%</div>
                          <div className="text-xs uppercase tracking-widest font-bold text-green-200">Carbon Footprint</div>
@@ -287,7 +313,7 @@ export default function App() {
                          <div className="text-5xl font-black text-green-400 mb-2">ZERO</div>
                          <div className="text-xs uppercase tracking-widest font-bold text-green-200">Liquid Discharge (ZLD)</div>
                     </div>
-                </div>
+                </Reveal>
              </div>
         </section>
 
@@ -300,9 +326,13 @@ export default function App() {
                 <p className="text-xl text-slate-600 leading-relaxed">
                     Dedicated, automated lines for high-volume SKUs.
                 </p>
+                <Link href="/products" className="inline-flex items-center mt-6 text-orange-600 font-bold hover:text-orange-700 transition-colors group">
+                    View full product range
+                    <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <Reveal className="grid lg:grid-cols-3 gap-8">
               {/* Card 1: Milk Specs */}
               <div className="bg-orange-50/50 rounded-2xl p-8 lg:p-10 border border-orange-100 hover:border-orange-300 transition-all">
                  <div className="flex items-center mb-6">
@@ -383,7 +413,7 @@ export default function App() {
                       </li>
                  </ul>
               </div>
-            </div>
+            </Reveal>
           </div>
         </section>
 
@@ -396,14 +426,17 @@ export default function App() {
 
           <div className=" mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="lg:grid lg:grid-cols-2 gap-24 items-center">
-              <div className="order-2 lg:order-1">
+              <Reveal className="order-2 lg:order-1">
+              <div>
                   <img
                     src="/advanced.jpg"
                     alt="Advanced dairy laboratory spectroscopy"
-                    className="rounded-xl h-[400px] shadow-2xl border-4 border-orange-600/20"
+                    className="rounded-xl h-[400px] shadow-2xl border-4 border-orange-600/20 w-full object-cover"
                   />
               </div>
-              <div className="order-1 lg:order-2 mb-16 lg:mb-0">
+              </Reveal>
+              <Reveal delay={0.15} className="order-1 lg:order-2 mb-16 lg:mb-0">
+              <div>
                 <h2 className="text-orange-500 font-bold uppercase tracking-widest mb-6">NABL Standard Lab</h2>
                 <h3 className="text-4xl lg:text-5xl font-extrabold mb-8 leading-tight">
                   Rigorous Dealer<br />Assurance.
@@ -437,6 +470,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
+              </Reveal>
             </div>
           </div>
         </section>
@@ -446,6 +480,7 @@ export default function App() {
         {/* FAQ SECTION (B2B Focus) */}
         <section className="py-24 bg-slate-50 border-t border-slate-100">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <Reveal>
                 <div className="text-center mb-16">
                      <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 text-orange-600 rounded-xl mb-4">
                          <HelpCircle className="w-6 h-6" />
@@ -453,8 +488,10 @@ export default function App() {
                     <h2 className="text-3xl font-extrabold text-slate-900">Commercial FAQs</h2>
                     <p className="text-slate-600 mt-4">Common queries from our OEM & Distribution partners.</p>
                 </div>
+                </Reveal>
 
-                <div className="space-y-4">
+                <Reveal delay={0.1} className="space-y-4">
+                <div>
                     {/* Q1 */}
                     <details className="group bg-white rounded-2xl shadow-sm border border-slate-200 open:border-orange-400 transition-all">
                         <summary className="flex cursor-pointer items-center justify-between p-6 text-slate-900 font-bold text-lg list-none [&::-webkit-details-marker]:hidden">
@@ -487,30 +524,48 @@ export default function App() {
                         </div>
                     </details>
                 </div>
+                </Reveal>
             </div>
         </section>
 
         {/* CTA */}
         <section id="contact" className="py-32 bg-orange-50 relative overflow-hidden border-t border-orange-100">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-orange-600 text-white rounded-full mb-12 shadow-xl shadow-orange-200">
+          <Reveal className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <div>
+              <motion.div
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                className="inline-flex items-center justify-center w-20 h-20 bg-orange-600 text-white rounded-full mb-12 shadow-xl shadow-orange-200"
+              >
                   <IndianRupee className="w-10 h-10" />
-              </div>
+              </motion.div>
             <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-8 tracking-tight leading-[1.2]">
               Partner with a trusted<br/>industrial supplier.
             </h2>
-            <p className="text-slate-700 text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+            <p className="text-slate-700 text-xl max-w-2xl mx-auto mb-4 leading-relaxed">
               Get competitive B2B rate cards for bulk supply or discuss private labeling opportunities for your brand.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6">
-              <button className="bg-orange-600 text-white hover:bg-orange-700 font-bold px-10 py-5 text-lg rounded-lg transition-all shadow-xl shadow-orange-600/20">
-                Download Dealer Rate Card
-              </button>
-              <button className="bg-white hover:bg-orange-50 text-slate-900 border-2 border-orange-200 font-bold px-10 py-5 text-lg rounded-lg transition-all">
-                Schedule Plant Audit
-              </button>
+            <p className="text-slate-700 text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
+              Ready to talk numbers?{' '}
+              <Link
+                href="/contact"
+                className="font-bold text-orange-600 underline underline-offset-4 decoration-orange-300 hover:text-orange-700 hover:decoration-orange-500 transition-colors"
+              >
+                Contact Us
+              </Link>{' '}
+              and our B2B team will respond within 24 hours.
+            </p>
+            <Link href="/contact">
+              <motion.span
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center bg-orange-600 text-white hover:bg-orange-700 font-bold px-10 py-5 text-lg rounded-lg transition-colors shadow-xl shadow-orange-600/20 cursor-pointer"
+              >
+                Contact Us <ArrowRight className="ml-2 w-5 h-5" />
+              </motion.span>
+            </Link>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
     </div>

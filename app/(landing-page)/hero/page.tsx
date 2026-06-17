@@ -125,7 +125,7 @@ export default function Hero() {
         <section id="process" className="py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
              <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">The PureDrop Standard</h2>
+              <h2 className="text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">The Ganga Amrit Standard</h2>
               <h3 className="text-4xl font-black text-slate-900 tracking-tight mb-6">Closed-Loop Purity.</h3>
               <p className="text-xl text-slate-600">From tanker reception to final palletization, our product never touches open air.</p>
             </div>
@@ -323,7 +323,7 @@ export default function Hero() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 text-blue-100 text-sm font-bold mb-6 border border-blue-400/30">Ready for scale?</span>
             <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
-              Start your next production run<br/>with PureDrop.
+              Start your next production run<br/>with Ganga Amrit.
             </h2>
             <p className="text-blue-100 text-xl max-w-2xl mx-auto mb-12 leading-relaxed">
               We have open capacity for Q3 2024. Schedule a technical consultation with our manufacturing engineers today.
