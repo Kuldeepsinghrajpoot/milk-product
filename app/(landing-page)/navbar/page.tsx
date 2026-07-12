@@ -21,14 +21,8 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    const timeout = window.setTimeout(() => {
-      setIsOpen(false);
-    }, 0);
-
-    return () => window.clearTimeout(timeout);
-  }, [pathname, isOpen]);
+    setIsOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
