@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+// Reads RESEND_API_KEY from the environment. Add it to .env.local (and to your
+// hosting provider's environment variables) before this route will actually send mail.
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not set");
+  }
+  return new Resend(apiKey);
+}
 
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "info@gangaamrit.co.in";
 const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "Ganga Amrit Website <noreply@gangaamrit.co.in>";
@@ -67,6 +76,8 @@ export async function POST(req: NextRequest) {
   try {
     // ── Email 1: Owner ko inquiry details ──────────────────────────
     const { error: ownerError } = await resend.emails.send({
+    const resend = getResend();
+    const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [TO_EMAIL],
       replyTo: email,
