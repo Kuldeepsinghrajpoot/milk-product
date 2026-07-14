@@ -12,12 +12,31 @@ export default function ContactPage() {
         {/* HERO */}
         <section className="relative pt-20 pb-24 bg-orange-50/30 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden opacity-10">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0,0 C30,40 70,40 100,0 L100,100 L0,100 Z" fill="url(#contact-grad)" />
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0,0 C30,40 70,40 100,0 L100,100 L0,100 Z"
+                fill="url(#contact-grad)"
+              />
               <defs>
-                <linearGradient id="contact-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style={{ stopColor: "rgb(255,237,213)", stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: "rgb(255,255,255)", stopOpacity: 1 }} />
+                <linearGradient
+                  id="contact-grad"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop
+                    offset="0%"
+                    style={{ stopColor: "rgb(255,237,213)", stopOpacity: 1 }}
+                  />
+                  <stop
+                    offset="100%"
+                    style={{ stopColor: "rgb(255,255,255)", stopOpacity: 1 }}
+                  />
                 </linearGradient>
               </defs>
             </svg>
@@ -32,8 +51,9 @@ export default function ContactPage() {
                 Let's talk supply.
               </h1>
               <p className="text-lg lg:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
-                Whether you're scaling a distribution network or need a private-label manufacturing partner,
-                our B2B team is one message away.
+                Whether you're scaling a distribution network or need a
+                private-label manufacturing partner, our B2B team is one message
+                away.
               </p>
             </div>
           </Reveal>
@@ -52,22 +72,28 @@ export default function ContactPage() {
                       <li className="flex items-start">
                         <MapPin className="w-5 h-5 mr-3 text-orange-500 shrink-0 mt-0.5" />
                         <span className="text-slate-300">
-                          Plot 14, Ganga Industrial Estate, Panki,<br />
+                          Plot 14, Ganga Industrial Estate, Panki,
+                          <br />
                           Kanpur, Uttar Pradesh 208020, India
                         </span>
                       </li>
                       <li className="flex items-start">
                         <Phone className="w-5 h-5 mr-3 text-orange-500 shrink-0 mt-0.5" />
                         <div className="text-slate-300">
-                          <div>+91 98765 43210 <span className="text-slate-500">(Sales)</span></div>
-                          <div>+91 91234 56780 <span className="text-slate-500">(Support)</span></div>
+                          <div>
+                            +91 98765 43210{" "}
+                            <span className="text-slate-500">(Sales)</span>
+                          </div>
+                          <div>
+                            +91 91234 56780{" "}
+                            <span className="text-slate-500">(Support)</span>
+                          </div>
                         </div>
                       </li>
                       <li className="flex items-start">
                         <Mail className="w-5 h-5 mr-3 text-orange-500 shrink-0 mt-0.5" />
                         <div className="text-slate-300">
-                          <div>partnerships@gangaamrit.in</div>
-                          <div>support@gangaamrit.in</div>
+                          <div>info@gangaamrit.co.in</div>
                         </div>
                       </li>
                     </ul>

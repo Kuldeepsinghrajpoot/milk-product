@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Menu, X } from 'lucide-react';
+import { ArrowRight, Menu, X, Home, Package, Info} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -10,22 +10,34 @@ import Logo from '../../components/Logo';
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const isActive = (path: string) => pathname === path;
 
   const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Products', href: '/products' },
-    { name: 'About Us', href: '/about' },
+    { name: 'Home', href: '/', icon: <Home className="w-3.5 h-3.5" /> },
+    { name: 'Products', href: '/products', icon: <Package className="w-3.5 h-3.5" /> },
+    { name: 'About Us', href: '/about', icon: <Info className="w-3.5 h-3.5" /> },
   ];
 
-  // Close the mobile menu whenever the route changes
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-gray-200 supports-[backdrop-filter]:bg-white/80">
+    <nav
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? 'bg-white/95 backdrop-blur-xl shadow-md border-b border-slate-100'
+          : 'bg-white/80 backdrop-blur-xl border-b border-gray-100'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
 
@@ -34,32 +46,28 @@ const Navbar = () => {
             <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="flex-shrink-0 flex items-center group cursor-pointer"
+              className="flex-shrink-0 flex items-center gap-3 cursor-pointer"
             >
-              <Logo className="h-10 w-10 mr-3 drop-shadow-sm" />
-              <span className="font-black text-xl tracking-tighter text-slate-900">
-                Gangey Amrit<span className="text-orange-600">.</span>
-              </span>
+              <Logo className="h-14 w-auto object-contain drop-shadow-sm" />
             </motion.div>
           </Link>
 
-          {/* Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`px-4 py-1.5 rounded-full text-sm transition-all border ${
-                    isActive(link.href)
-                      ? 'text-orange-700 bg-orange-50/80 border-orange-100 font-bold'
-                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border-transparent font-medium'
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </div>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm transition-all border ${
+                  isActive(link.href)
+                    ? 'text-blue-700 bg-blue-50 border-blue-100 font-bold'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50 border-transparent font-medium'
+                }`}
+              >
+                {link.icon}
+                {link.name}
+              </Link>
+            ))}
           </div>
 
           {/* CTA */}
@@ -68,7 +76,7 @@ const Navbar = () => {
               <motion.span
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
-                className="group bg-slate-900 hover:bg-orange-600 text-white px-6 py-3 rounded-lg text-sm font-bold transition-all duration-300 shadow-md hover:shadow-orange-500/25 flex items-center cursor-pointer"
+                className="group bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg text-sm font-bold transition-all duration-300 shadow-md hover:shadow-blue-500/25 flex items-center cursor-pointer"
               >
                 B2B Inquiries
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -104,18 +112,21 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`block px-4 py-3 rounded-lg text-base font-medium transition-colors ${
+                  className={`flex items-center gap-2.5 px-4 py-3 rounded-lg text-base font-medium transition-colors ${
                     isActive(link.href)
-                      ? 'text-orange-700 bg-orange-50'
+                      ? 'text-blue-700 bg-blue-50'
                       : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
+                  <span className={isActive(link.href) ? 'text-blue-600' : 'text-slate-400'}>
+                    {link.icon}
+                  </span>
                   {link.name}
                 </Link>
               ))}
               <Link
                 href="/contact"
-                className="flex items-center justify-center mt-3 bg-slate-900 hover:bg-orange-600 text-white px-6 py-3 rounded-lg text-sm font-bold transition-all"
+                className="flex items-center justify-center mt-3 bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-lg text-sm font-bold transition-all"
               >
                 B2B Inquiries <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

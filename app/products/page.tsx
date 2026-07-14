@@ -1,18 +1,25 @@
+
+
 "use client";
 
-import React from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import {
   ArrowRight,
+  ArrowLeft,
   CheckCircle2,
   Clock,
   Droplets,
   Milk,
   Package,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { Reveal } from "../components/Reveal";
 import MilkPouch from "../components/MilkPouch";
+import WaveDivider from "../components/WaveDivider";
+import ScrollProgress from "../components/ScrollProgress";
 
 type MilkType = {
   name: string;
@@ -21,9 +28,9 @@ type MilkType = {
   snf: string;
   description: string;
   packs: string[];
-  accent: string; // tailwind color stem, e.g. "orange"
-  color: string; // hex used inside the MilkPouch illustration
-  liquid: string; // light hex tint used for the illustration's liquid fill
+  accent: string;
+  color: string;
+  liquid: string;
 };
 
 const MILK_TYPES: MilkType[] = [
@@ -85,33 +92,198 @@ const COMING_SOON = [
   { name: "Buttermilk (Chaas)", note: "Spiced and plain variants" },
 ];
 
-const accentClasses: Record<string, { bg: string; text: string; border: string; chip: string }> = {
-  orange: { bg: "bg-orange-50/60", text: "text-orange-600", border: "border-orange-100 hover:border-orange-300", chip: "bg-white text-orange-700 border-orange-200" },
-  amber: { bg: "bg-amber-50/60", text: "text-amber-600", border: "border-amber-100 hover:border-amber-300", chip: "bg-white text-amber-700 border-amber-200" },
-  blue: { bg: "bg-blue-50/60", text: "text-blue-600", border: "border-blue-100 hover:border-blue-300", chip: "bg-white text-blue-700 border-blue-200" },
-  green: { bg: "bg-green-50/60", text: "text-green-600", border: "border-green-100 hover:border-green-300", chip: "bg-white text-green-700 border-green-200" },
+const accentClasses: Record<string, { bg: string; text: string; border: string; chip: string; glow: string }> = {
+  orange: { bg: "bg-orange-50/60", text: "text-orange-600", border: "border-orange-200", chip: "bg-white text-orange-700 border-orange-200", glow: "shadow-orange-200" },
+  amber: { bg: "bg-amber-50/60", text: "text-amber-600", border: "border-amber-200", chip: "bg-white text-amber-700 border-amber-200", glow: "shadow-amber-200" },
+  blue: { bg: "bg-blue-50/60", text: "text-blue-600", border: "border-blue-200", chip: "bg-white text-blue-700 border-blue-200", glow: "shadow-blue-200" },
+  green: { bg: "bg-green-50/60", text: "text-green-600", border: "border-green-200", chip: "bg-white text-green-700 border-green-200", glow: "shadow-green-200" },
 };
 
+/* ────────────────────────────────────────────────────────────────
+   DRAGGABLE CAROUSEL
+──────────────────────────────────────────────────────────────── */
+function ProductCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const startX = useRef(0);
+  const scrollStart = useRef(0);
+  const total = MILK_TYPES.length;
+
+  const prev = useCallback(() => setCurrent((c) => (c - 1 + total) % total), [total]);
+  const next = useCallback(() => setCurrent((c) => (c + 1) % total), [total]);
+
+  // Keyboard support
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [prev, next]);
+
+  // Touch handlers
+  const onTouchStart = (e: React.TouchEvent) => {
+    startX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - startX.current;
+    if (Math.abs(dx) > 50) dx < 0 ? next() : prev();
+  };
+
+  const milk = MILK_TYPES[current];
+  const accent = accentClasses[milk.accent];
+
+  return (
+    <div className="relative">
+      {/* Sticky filter/tab bar on mobile */}
+      <div className="sticky top-20 z-30 bg-white/90 backdrop-blur border-b border-slate-100 py-3 mb-10 -mx-4 px-4 md:static md:bg-transparent md:border-none md:py-0 md:mb-12 md:mx-0 md:px-0">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar max-w-7xl mx-auto">
+          {MILK_TYPES.map((m, i) => (
+            <button
+              key={m.name}
+              onClick={() => setCurrent(i)}
+              className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                current === i
+                  ? `${accentClasses[m.accent].bg} ${accentClasses[m.accent].text} ${accentClasses[m.accent].border}`
+                  : "text-slate-500 border-transparent hover:bg-slate-100"
+              }`}
+            >
+              {m.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Carousel Card */}
+      <div
+        ref={trackRef}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        className="select-none"
+      >
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, x: 60 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -60 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className={`rounded-3xl border-2 ${accent.border} ${accent.bg} p-8 lg:p-14 shadow-xl ${accent.glow}`}
+        >
+          <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10">
+            {/* Milk Pouch illustration — bigger in carousel */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.5, ease: "backOut" }}
+              className="shrink-0"
+            >
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <MilkPouch
+                  color={milk.color}
+                  fill={milk.liquid}
+                  label={milk.name}
+                  fat={milk.fat}
+                  className="w-40 lg:w-52 drop-shadow-2xl"
+                />
+              </motion.div>
+            </motion.div>
+
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-bold border ${accent.chip}`}>{milk.fat}</span>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold border ${accent.chip}`}>{milk.snf}</span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 mb-2">{milk.name}</h2>
+              <p className={`text-base font-semibold ${accent.text} mb-5`}>{milk.tagline}</p>
+              <p className="text-slate-600 text-lg leading-relaxed mb-8 max-w-xl">{milk.description}</p>
+
+              <div className="border-t border-slate-200/70 pt-6">
+                <div className="flex items-center justify-center lg:justify-start text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">
+                  <Package className="w-4 h-4 mr-2" /> Available Packaging
+                </div>
+                <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                  {milk.packs.map((pack) => (
+                    <motion.span
+                      key={pack}
+                      whileHover={{ scale: 1.05 }}
+                      className="inline-flex items-center text-sm font-medium text-slate-700 bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm"
+                    >
+                      <CheckCircle2 className={`w-4 h-4 mr-2 ${accent.text}`} />
+                      {pack}
+                    </motion.span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Navigation Arrows + Dots */}
+      <div className="flex items-center justify-between mt-8">
+        <div className="flex gap-3">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={prev}
+            className="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={next}
+            className="w-12 h-12 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-600 hover:border-blue-400 hover:text-blue-600 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </motion.button>
+        </div>
+
+        {/* Dots */}
+        <div className="flex gap-2">
+          {MILK_TYPES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`rounded-full transition-all duration-300 ${
+                current === i ? "w-8 h-3 bg-blue-600" : "w-3 h-3 bg-slate-300 hover:bg-slate-400"
+              }`}
+            />
+          ))}
+        </div>
+
+        <div className="text-slate-400 text-sm font-medium">
+          {current + 1} / {total}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────────────
+   PAGE
+──────────────────────────────────────────────────────────────── */
 export default function ProductsPage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-orange-100 selection:text-orange-900">
+    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+      <ScrollProgress />
       <main>
         {/* HERO */}
-        <section className="relative pt-20 pb-24 bg-orange-50/30 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden opacity-10">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M0,0 C30,40 70,40 100,0 L100,100 L0,100 Z" fill="url(#prod-grad)" />
-              <defs>
-                <linearGradient id="prod-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style={{ stopColor: "rgb(255,237,213)", stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: "rgb(255,255,255)", stopOpacity: 1 }} />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+        <section className="relative pt-20 pb-24 bg-gradient-to-br from-blue-50 via-white to-green-50/30 overflow-hidden">
+          <motion.div
+            className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-blue-100/60 blur-3xl pointer-events-none"
+            animate={{ scale: [1, 1.15, 1] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
           <Reveal className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div>
-              <div className="inline-flex items-center space-x-2 text-orange-700 font-bold text-sm tracking-widest uppercase mb-6 bg-orange-100 px-4 py-2 rounded-full">
+              <div className="inline-flex items-center space-x-2 text-blue-700 font-bold text-sm tracking-widest uppercase mb-6 bg-blue-100 px-4 py-2 rounded-full">
                 <Milk className="w-4 h-4" />
                 <span>Our Products</span>
               </div>
@@ -119,62 +291,29 @@ export default function ProductsPage() {
                 Pure milk, precisely standardized.
               </h1>
               <p className="text-lg lg:text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
-                Every variant is fat-and-SNF standardized on the same automated lines, pasteurized within hours
-                of collection, and packed in formats built for retail and bulk B2B supply.
+                Every variant is fat-and-SNF standardized on the same automated lines, pasteurized within hours of
+                collection, and packed in formats built for retail and bulk B2B supply.
               </p>
             </div>
           </Reveal>
         </section>
 
-        {/* MILK TYPES */}
-        <section className="py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
-              {MILK_TYPES.map((milk, i) => {
-                const accent = accentClasses[milk.accent];
-                return (
-                  <Reveal key={milk.name} delay={i * 0.1}>
-                    <div className={`h-full rounded-2xl p-6 sm:p-8 lg:p-10 border transition-all ${accent.bg} ${accent.border}`}>
-                      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6">
-                        <MilkPouch
-                          color={milk.color}
-                          fill={milk.liquid}
-                          label={milk.name}
-                          fat={milk.fat}
-                          className="w-28 sm:w-24 lg:w-28 shrink-0 drop-shadow-md"
-                        />
-                        <div className="text-center sm:text-left">
-                          <h3 className="text-2xl font-bold text-slate-900">{milk.name}</h3>
-                          <p className="text-slate-500 text-sm mb-3">{milk.tagline}</p>
-                          <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${accent.chip}`}>{milk.fat}</span>
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${accent.chip}`}>{milk.snf}</span>
-                          </div>
-                        </div>
-                      </div>
+        <WaveDivider fromColor="#eff6ff" toColor="#ffffff" />
 
-                      <p className="text-slate-600 mb-6 leading-relaxed text-sm">{milk.description}</p>
-
-                      <div className="border-t border-slate-200/70 pt-5">
-                        <div className="flex items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
-                          <Package className="w-4 h-4 mr-2" /> Available Packaging
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {milk.packs.map((pack) => (
-                            <span key={pack} className="inline-flex items-center text-xs font-medium text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-lg">
-                              <CheckCircle2 className={`w-3.5 h-3.5 mr-1.5 ${accent.text}`} />
-                              {pack}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
+        {/* ═══ PRODUCT CAROUSEL ═══ */}
+        <section className="py-16 lg:py-24">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Reveal className="text-center mb-12">
+              <div>
+                <h2 className="text-3xl font-extrabold text-slate-900 mb-3">Milk Variants</h2>
+                <p className="text-slate-500">Swipe, drag, or use arrows to explore our range</p>
+              </div>
+            </Reveal>
+            <ProductCarousel />
           </div>
         </section>
+
+        <WaveDivider fromColor="#ffffff" toColor="#f8fafc" />
 
         {/* COMING SOON */}
         <section className="py-24 bg-slate-50 border-t border-slate-100">
@@ -195,18 +334,22 @@ export default function ProductsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {COMING_SOON.map((item, i) => (
                 <Reveal key={item.name} delay={i * 0.08}>
-                  <div className="relative h-full bg-white rounded-2xl border border-slate-200 p-6 overflow-hidden grayscale-[0.3] opacity-80 hover:opacity-100 hover:grayscale-0 transition-all duration-300">
+                  <motion.div
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    transition={{ duration: 0.25 }}
+                    className="relative h-full bg-white rounded-2xl border border-slate-200 p-6 overflow-hidden hover:border-blue-300 transition-colors"
+                  >
                     <motion.span
                       animate={{ opacity: [0.5, 1, 0.5] }}
                       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                       className="absolute top-3 right-3 inline-flex items-center gap-1 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
                     >
-                      Coming Soon
+                      Soon
                     </motion.span>
-                    <Droplets className="w-8 h-8 text-slate-400 mb-6 mt-2" />
+                    <Droplets className="w-8 h-8 text-blue-400 mb-6 mt-2" />
                     <h4 className="font-bold text-slate-900 mb-1">{item.name}</h4>
                     <p className="text-slate-500 text-xs leading-relaxed">{item.note}</p>
-                  </div>
+                  </motion.div>
                 </Reveal>
               ))}
             </div>
@@ -214,20 +357,24 @@ export default function ProductsPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 bg-orange-600">
-          <Reveal className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div>
+        <section className="py-20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-900" />
+          <motion.div
+            className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"
+          />
+          <Reveal className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 p-10">
               <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4 tracking-tight">
                 Want a custom SKU or pack size?
               </h2>
-              <p className="text-orange-100 text-lg mb-8 max-w-xl mx-auto">
+              <p className="text-blue-100 text-lg mb-8 max-w-xl mx-auto">
                 Our OEM line can format any of these variants under your own private label.
               </p>
               <Link href="/contact">
                 <motion.span
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center bg-white text-orange-700 hover:bg-orange-50 font-bold px-8 py-4 rounded-xl text-lg transition-colors shadow-xl cursor-pointer"
+                  className="inline-flex items-center bg-white text-blue-700 hover:bg-blue-50 font-bold px-8 py-4 rounded-xl text-lg transition-colors shadow-xl cursor-pointer"
                 >
                   Talk to our team <ArrowRight className="ml-2 w-5 h-5" />
                 </motion.span>
