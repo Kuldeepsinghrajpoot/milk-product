@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: { default: "Ganga Amrit | Milk Agency, Distributor & Dairy in Chhatarpur, MP", template: "%s | Ganga Amrit" },
   description: "Ganga Amrit - Chhatarpur's own dairy. Fresh pasteurized Gold Full Cream, Double Toned and Chai Special milk. Distributor and agency enquiries welcome.",
+  icons: { icon: [{ url: "/favicon-logo.png?v=4", type: "image/png" }], shortcut: "/favicon-logo.png?v=4", apple: "/apple-logo.png?v=4" },
   openGraph: { type: "website", siteName: "Ganga Amrit", locale: "en_IN" },
 };
 export const viewport: Viewport = { themeColor: "#1d4ed0", width: "device-width", initialScale: 1, viewportFit: "cover" };
