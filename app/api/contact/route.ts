@@ -11,24 +11,21 @@ function getResend() {
   return new Resend(apiKey);
 }
 
-// Where inquiries land. Replace with a real inbox you monitor.
+// Where inquiries land (receiver).
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || "info@gangaamrit.co.in";
-// Resend requires the "from" address to be on a domain you've verified with them.
+// Resend requires the "from" address (sender) to be on a domain you've verified with them.
 // "onboarding@resend.dev" works out of the box for testing without a verified domain.
 const FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || "Ganga Amrit Website <noreply@gangaamrit.co.in>";
 
 type ContactPayload = {
-  fullName: string;
+  name: string;
+  phone: string;
   email: string;
-  phonePrimary: string;
-  phoneSecondary?: string;
-  inquiryType: string;
-  address: string;
   city: string;
-  state: string;
-  pincode: string;
+  type?: string;
+  volume?: string;
   message?: string;
-  // Honeypot — see ContactForm.tsx. Real visitors never fill this.
+  // Honeypot - real visitors never fill this.
   company_website?: string;
 };
 
@@ -50,24 +47,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: false, error: "Invalid request body." }, { status: 400 });
   }
 
-  const { fullName, email, phonePrimary, phoneSecondary, inquiryType, address, city, state, pincode, message, company_website } = data;
+  const { name, phone, email, city, type, volume, message, company_website } = data;
 
-  // Honeypot check (defense-in-depth in case a bot bypasses the client JS
-  // and posts directly to this endpoint). Pretend success either way so the
-  // bot gets no signal that it was filtered.
+  // Honeypot: pretend success so bots get no signal.
   if (company_website) {
     return NextResponse.json({ success: true });
   }
 
-  // Server-side validation mirrors the client-side react-hook-form rules.
+  // Server-side validation mirrors the client-side rules.
   const requiredFields: [keyof ContactPayload, string | undefined][] = [
-    ["fullName", fullName],
+    ["name", name],
     ["email", email],
-    ["phonePrimary", phonePrimary],
-    ["address", address],
+    ["phone", phone],
     ["city", city],
-    ["state", state],
-    ["pincode", pincode],
   ];
   const missing = requiredFields.filter(([, value]) => !value || !value.trim());
   if (missing.length > 0) {
@@ -77,12 +69,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const cleanEmail = email?.trim();
+  if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    return NextResponse.json({ success: false, error: "Enter a valid email address." }, { status: 400 });
+  }
+
   if (!process.env.RESEND_API_KEY) {
-    console.error("RESEND_API_KEY is not set — cannot send contact emails.");
-    return NextResponse.json(
-      { success: false, error: "Email service is not configured yet." },
-      { status: 500 }
-    );
+    console.error("RESEND_API_KEY is not set - cannot send contact emails.");
+    return NextResponse.json({ success: false, error: "Email service is not configured yet." }, { status: 500 });
   }
 
   try {
@@ -90,17 +84,17 @@ export async function POST(req: NextRequest) {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [TO_EMAIL],
-      replyTo: email,
-      subject: `New ${inquiryType || "General"} inquiry from ${fullName}`,
+      replyTo: cleanEmail,
+      subject: `New ${type || "General"} inquiry from ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #1e293b;">
           <h2 style="color:#EA580C;">New website inquiry — Ganga Amrit</h2>
-          <p><strong>Name:</strong> ${escapeHtml(fullName!)}</p>
-          <p><strong>Email:</strong> ${escapeHtml(email!)}</p>
-          <p><strong>Phone (Primary):</strong> ${escapeHtml(phonePrimary!)}</p>
-          <p><strong>Phone (Secondary):</strong> ${phoneSecondary ? escapeHtml(phoneSecondary) : "-"}</p>
-          <p><strong>Inquiry Type:</strong> ${escapeHtml(inquiryType || "General")}</p>
-          <p><strong>Address:</strong> ${escapeHtml(address!)}, ${escapeHtml(city!)}, ${escapeHtml(state!)} - ${escapeHtml(pincode!)}</p>
+          <p><strong>Name:</strong> ${escapeHtml(name!)}</p>
+          <p><strong>Email:</strong> ${escapeHtml(cleanEmail)}</p>
+          <p><strong>Phone:</strong> ${escapeHtml(phone!)}</p>
+          <p><strong>City:</strong> ${escapeHtml(city!)}</p>
+          <p><strong>Inquiry Type:</strong> ${escapeHtml(type || "General")}</p>
+          <p><strong>Expected Volume:</strong> ${volume?.trim() ? `${escapeHtml(volume.trim())} litres/day` : "-"}</p>
           <p><strong>Message:</strong><br/>${message ? escapeHtml(message).replace(/\n/g, "<br/>") : "-"}</p>
         </div>
       `,

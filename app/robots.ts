@@ -1,13 +1,6 @@
 import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://gangaamrit.co.in";
+import { SITE } from "@/lib/data";
 
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
-    sitemap: `${BASE_URL}/sitemap.xml`,
-  };
+  return { rules: { userAgent: "*", allow: "/" }, sitemap: `${SITE.url}/sitemap.xml` };
 }

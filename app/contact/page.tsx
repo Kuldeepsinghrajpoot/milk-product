@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
-import ContactClient from "./ContactClient";
+import PageHeader from "@/components/PageHeader";
+import { ContactSection } from "@/components/pages";
 
 export const metadata: Metadata = {
-  title: "Contact Us - Milk Agency & Distributor Enquiries, Chhatarpur",
-  description:
-    "Get in touch with Ganga Amrit for distributorship, bulk supply, or retail stocking. Facility in Chhatarpur, Madhya Pradesh - call, WhatsApp, or email us.",
+  title: "B2B Inquiries",
+  description: "Distributor, agency, retail and bulk supply enquiries for Ganga Amrit milk, Chhatarpur, Madhya Pradesh.",
+  alternates: { canonical: "/contact" },
 };
 
-export default function ContactPage() {
-  return <ContactClient />;
+export default function Page() {
+  return (
+    <div className="inner">
+      <PageHeader kicker="B2B Inquiries" title="Let's talk milk." sub="Distributor, agency, retail or bulk supply - tell us what you need and we will get back to you." />
+      <ContactSection bare />
+    </div>
+  );
 }

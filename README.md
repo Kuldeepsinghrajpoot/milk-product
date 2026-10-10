@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ganga Amrit website (Next.js 16 + React 19 + TypeScript + Tailwind)
 
-## Getting Started
-
-First, run the development server:
-
+## Chalane ke steps
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Node.js 20.9 ya naya chahiye
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # production build check
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
+- `app/` - pages: `/`, `/products`, `/about`, `/faq`, `/contact`, `/terms`, `/privacy`, 404, sitemap, robots
+- `components/` - Header, Footer, Hero, ProductCard, Gallery, ContactForm, sections
+- `lib/data.ts` - **saara content yahin se badlo** (products, FAQ, About Hindi/English, legal text, phone, address)
+- `public/images/` - aapke 3 milk pack ki photos (gold, chai-special, double-toned)
+- `app/globals.css` - poora design (Tailwind preflight band hai taaki design same rahe; Tailwind utilities naye kaam ke liye chalte hain)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Animations (naye)
+- Smooth inertia scrolling (Lenis) + top par scroll progress bar
+- Hero: headline word-by-word reveal, parallax packs, scroll par text fade
+- Header neeche scroll par chhup jata hai, upar scroll par wapas aata hai
+- Cards/sections ek-ek karke uthkar aate hain; stats count-up hote hain
+- Product pack par mouse le jao to 3D tilt; buttons par shine; pages ke beech soft transition
+- "prefers-reduced-motion" on ho to sab animations band ho jaate hain
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Hero video
+`public/hero.mp4` naam se video rakho (10-15 sec, 5 MB tak). Mile to hero me chalega, na mile to background saada rehta hai.
 
-## Learn More
+## Factory photos
+Gallery `https://www.gangaamrit.co.in/gallery/factory-1.jpg ... factory-8.jpg` se photos leti hai. Chaho to `public/gallery/` me rakho aur `lib/data.ts` ka `GALLERY` src badlo.
 
-To learn more about Next.js, take a look at the following resources:
+## Contact form
+WhatsApp (+91 74158 02748) par message kholta hai. Koi data save nahi hota. Email/DB chahiye to `/api/contact` route jodna padega.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Dhyan dein
+- Pehli baar `npm run build` ke waqt internet chahiye (Google fonts download hote hain).
+- Ye project is chat me `npm install` / `build` chala kar test nahi hua (internet nahi tha). Pehli baar `npm run build` chala kar dekh lena.
+- Terms aur Privacy ka text aam draft hai; publish se pehle kisi jaankar se dikhwa lena.
+- Domain `https://www.gangaamrit.co.in` `lib/data.ts` me SITE.url hai.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Performance (lag ho to)
+- `npm run dev` hamesha slow/laggy hota hai. Asli speed dekhne ke liye: `npm run build` phir `npm start`.
+- Hero video sirf tab chalti hai jab screen par dikhe; tab chhupne par ruk jati hai.
+- Header se blur hata diya, bhaari blend/shadow effects kam kiye, neeche ke sections tab render hote hain jab scroll karke aate hain.
 
-## Deploy on Vercel
+## Pack photos
+`public/images/*.webp` transparent (background hata hua) images hain. Naya pack aaye to wahi naam se replace kar do.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Next.js 16 upgrade notes
+- Purana `node_modules`, `.next` aur lock file hata kar fresh install karo: `pnpm install` (ya `npm install`).
+- `next lint` Next 16 me hata diya gaya hai, isliye `npm run lint` ab seedha `eslint .` chalata hai (`eslint.config.mjs`).
+- Turbopack ab dev aur build dono me default hai.
+- `next/image` ka `priority` ab `preload` ho gaya hai.
