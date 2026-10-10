@@ -69,7 +69,7 @@ export const GALLERY = [
   { icon: "tank", cap: "Stainless-Steel Processing Plant", alt: "Stainless-steel milk processing plant" },
   { icon: "truck", cap: "Daily Chilled Milk Dispatch", alt: "Chilled milk tanker used for daily dispatch" },
   { icon: "tank", cap: "Processing Tanks & Piping", alt: "Overhead piping and processing tanks at the facility" },
-].map((g, i) => ({ ...g, src: `https://www.gangaamrit.co.in/gallery/factory-${i + 1}.jpg` }));
+].map((g, i) => ({ ...g, src: `/gallery/factory-${i + 1}.jpg` }));
 
 export const TERMS: { h: string; p: string }[] = [
   { h: "1. About this website", p: "This website is operated by Ganga Amrit, Ganga Ice Factory and Milk Products, Industrial Area, Ward No. 01, Chhatarpur, Madhya Pradesh - 471001. By using this website you agree to these terms." },
